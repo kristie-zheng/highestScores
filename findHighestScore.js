@@ -1,5 +1,6 @@
 const fs = require('file-system');
 const readline = require('readline');
+const buckets = require('buckets-js');
 
 //function to read in text file and retrieve id and score
 let parseFile = inputFilePath => {
@@ -29,10 +30,21 @@ let parseFile = inputFilePath => {
     }
     lineNumber++
   });
-  
+
   rl.on('close', () => {
     console.log('here is the records array', records);
   })
 }
 
 parseFile('./data.txt');
+
+let comparator = (objectA, objectB) => {
+  if (objectA.score === objectB.score) {
+    return 0;
+  }
+  return objectA.score < objectB.score ? -1 : 1;
+}
+
+let findHighestScore = (n) => {
+  let minHeap = new buckets.Heap(comparator);
+}
