@@ -7,7 +7,7 @@ const buckets = require('buckets-js');
   takes inputFilePath (string)
   returns array of objects (records) containing id and score
 */
-let parseFile = inputFilePath => {
+let parseFile = (inputFilePath, afterParsed, n) => {
   let records = [];
   const input = fs.createReadStream(inputFilePath);
   const rl = readline.createInterface(input);
@@ -37,6 +37,7 @@ let parseFile = inputFilePath => {
 
   rl.on('close', () => {
     console.log('here is the records array', records);
+    afterParsed(records, n);
   });
   return records;
 }
@@ -58,7 +59,7 @@ let findHighestScores = (records, n) => {
   var nHighestScores = [];
   let minHeap = new buckets.Heap(comparator);
   records.forEach(record => {
-    if (record.score > minHeap.peek()) {
+    if (record.score > minHeap.peek() || minHeap.size() < n) {
       minHeap.add(record);
     }
     if (minHeap.size() > n) {
@@ -81,10 +82,7 @@ let findHighestScores = (records, n) => {
  */
 
 let nHighestByFile = (filePath, n) => {
-  let dataRecords = parseFile(filePath);
-  let highestScores = findHighestScores(dataRecords, n);
-  console.log(highestScores);
-  return highestScores;
+  let dataRecords = parseFile(filePath, findHighestScores, n);
 }
 
 console.log(nHighestByFile('./data.txt', 3))
