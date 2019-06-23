@@ -72,3 +72,19 @@ let findHighestScores = (records, n) => {
   console.log('here are the', n, 'highstScores', nHighestScores);
   return nHighestScores;
 }
+
+/*
+  "main function"
+  function that finds n highest scores
+  take in file path and n
+  output / log json file
+ */
+
+let nHighestByFile = (filePath, n) => {
+  let dataRecords = parseFile(filePath);
+  let highestScores = findHighestScores(dataRecords, n);
+  console.log(highestScores);
+  return highestScores;
+}
+
+console.log(nHighestByFile('./data.txt', 3))
