@@ -6,7 +6,10 @@ let parseFile = inputFilePath => {
   const input = fs.createReadStream(inputFilePath);
   const rl = readline.createInterface(input);
   rl.on('line', (line) => {
-    console.log('heres the line', line)
+    console.log('heres the line', line);
+    var segments = line.split(/[0-9]\:/);
+    console.log(segments);
+
   });
   rl.on('close', () => {
     console.log('done');
