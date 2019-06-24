@@ -30,6 +30,7 @@ let parseFile = (inputFilePath, afterParsed, n) => {
       }
       catch(exception) {
         console.log("Problem parsing JSON at row", lineNumber, exception)
+        return process.exit(2)
       }
     }
     lineNumber++
@@ -59,7 +60,7 @@ let findHighestScores = (records, n) => {
   var nHighestScores = [];
   let minHeap = new buckets.Heap(comparator);
   records.forEach(record => {
-    if (record.score > minHeap.peek() || minHeap.size() < n) {
+    if ( minHeap.size() < n || record.score > minHeap.peek()) {
       minHeap.add(record);
     }
     if (minHeap.size() > n) {
@@ -71,6 +72,9 @@ let findHighestScores = (records, n) => {
     nHighestScores.push(removedVal);
   }
   console.log('here are the', n, 'highstScores', nHighestScores.reverse());
+  console.log(nHighestScores.map(record => {
+    return JSON.stringify(record);
+  }))
   return nHighestScores.reverse();
 }
 
@@ -83,8 +87,13 @@ let findHighestScores = (records, n) => {
  */
 
 let nHighestByFile = (filePath, n) => {
-  let dataRecords = parseFile(filePath, findHighestScores, n);
-  console.log('datarecords', dataRecords);
+  fs.access(filePath, fs.constants.F_OK, (err) =>{
+    if(err) {
+      console.log(`The file at path ${filePath} does not exist.`);
+      return process.exit(1);
+    }
+    return parseFile(filePath, findHighestScores, n);
+  });
 }
 
-console.log(nHighestByFile('./data.txt', 3))
+console.log(nHighestByFile('./data2.txt', 7))
