@@ -1,5 +1,5 @@
 const faker = require('faker');
-
+const fs = require('file-system');
 let randomInt = (min, max) => {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -16,11 +16,10 @@ let generateRecords = (number) => {
       recordString += `"${faker.random.word()}": "${faker.random.word()}", `
      
     } 
-    recordString = recordString.slice(0, -2) 
-    recordString += '}'
+    recordString = recordString.slice(0, -2); 
+    recordString += "}";
     recordStrings.push(recordString);
   }
-  // console.log(recordStrings);
   return recordStrings;
 }
 
@@ -33,4 +32,17 @@ let shuffle = (records) => {
   }
   return records;
 }
-console.log(shuffle(generateRecords(10)));
+let shuffledRecords = shuffle(generateRecords(10000));
+
+let writeFile = (path, fileName, data) => {
+  fs.writeFile(`${path}/${fileName}`, data, (err) => {
+    console.log(`${path}/${fileName}`)
+    if (err) { 
+      console.log(err)
+    } else {
+      console.log('The file has been saved with the id of ' + fileName);
+    }
+});
+}
+
+writeFile('.', 'LargeNumValidRecords.data', shuffledRecords.map((record) => { return record }).join('\n'),)
