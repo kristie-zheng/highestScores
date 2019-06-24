@@ -5,6 +5,7 @@ let randomInt = (min, max) => {
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min; 
 }
+
 let generateRecords = (number) => {
   let recordStrings = [];
   for (var i = 0; i < number; i++) {
@@ -19,6 +20,17 @@ let generateRecords = (number) => {
     recordString += '}'
     recordStrings.push(recordString);
   }
-  return recordString;
+  // console.log(recordStrings);
+  return recordStrings;
 }
-generateRecords(10)
+
+let shuffle = (records) => { 
+  for (var i = 0; i < records.length; i++) {
+    let randomIndex = i + Math.floor(Math.random() * (records.length -i));
+    let temp = records[i];
+    records[i] = records[randomIndex];
+    records[randomIndex] = temp;
+  }
+  return records;
+}
+console.log(shuffle(generateRecords(10)));
