@@ -5,7 +5,7 @@ const buckets = require('buckets-js');
 /*
   function to read in text file and produce array of records
   takes inputFilePath, a callback, and a number of records desired [pass to CB]
-  returns result of the callback: an array of the n highest scores
+  logs + returns result of the callback: an array of the n highest scores
 */
 let parseFile = (inputFilePath, afterParsed, n) => {
   let records = [];
@@ -37,7 +37,9 @@ let parseFile = (inputFilePath, afterParsed, n) => {
 
   rl.on('close', () => {
     // console.log('here is the records array', records);
-    afterParsed(records, n);
+    var returnFromCB = afterParsed(records, n)
+    console.log(`The ${n} highest scores are`, returnFromCB)
+    return returnFromCB;
   });
 }
 
@@ -68,11 +70,8 @@ let findHighestScores = (records, n) => {
   })
   while (minHeap.size() > 0) {
     let removedVal = minHeap.removeRoot();
-    nHighestScores.push(removedVal);
+    nHighestScores.push(JSON.stringify(removedVal));
   }
-  nHighestScores.map(record => {
-    return JSON.stringify(record);
-  });
   return nHighestScores.reverse();
 }
 
@@ -85,13 +84,15 @@ let findHighestScores = (records, n) => {
  */
 
 let nHighestByFile = (filePath, n) => {
+  if (n === 0) {
+    return process.exit(0);
+  }
   fs.access(filePath, fs.constants.F_OK, (err) =>{
     if(err) {
       console.log(`The file at path ${filePath} does not exist.`);
       return process.exit(1);
     }
-    return parseFile(filePath, findHighestScores, n);
   });
+  return parseFile(filePath, findHighestScores, n);
 }
-
-console.log(nHighestByFile('./test_files/NoNewLinerecords.txt', 2));
+nHighestByFile('./test_files/LargeNumValidRecords.data', 100);
