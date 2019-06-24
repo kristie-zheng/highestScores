@@ -16,7 +16,7 @@ let parseFile = (inputFilePath, afterParsed, n) => {
   rl.on('line', (line) => {
     // console.log('heres the line', line);
     if (line) {
-      let segments = line.split(/[0-9]\:/);
+      let segments = line.split(/([0-9]+)\:/).slice(1);
       let score = Number(segments[0]);
       try {
         let data = JSON.parse(segments[1]);
@@ -25,7 +25,6 @@ let parseFile = (inputFilePath, afterParsed, n) => {
           record.id = data.id;
           record.score = score;
           records.push(record);
-          // console.log('score', score, 'segments', data)
         }
       }
       catch(exception) {
@@ -37,7 +36,7 @@ let parseFile = (inputFilePath, afterParsed, n) => {
   });
 
   rl.on('close', () => {
-    console.log('here is the records array', records);
+    // console.log('here is the records array', records);
     afterParsed(records, n);
   });
 }
@@ -60,7 +59,7 @@ let findHighestScores = (records, n) => {
   var nHighestScores = [];
   let minHeap = new buckets.Heap(comparator);
   records.forEach(record => {
-    if ( minHeap.size() < n || record.score > minHeap.peek()) {
+    if ( minHeap.size() < n || record.score > minHeap.peek().score) {
       minHeap.add(record);
     }
     if (minHeap.size() > n) {
@@ -71,10 +70,9 @@ let findHighestScores = (records, n) => {
     let removedVal = minHeap.removeRoot();
     nHighestScores.push(removedVal);
   }
-  console.log('here are the', n, 'highstScores', nHighestScores.reverse());
-  console.log(nHighestScores.map(record => {
+  nHighestScores.map(record => {
     return JSON.stringify(record);
-  }))
+  });
   return nHighestScores.reverse();
 }
 
@@ -96,4 +94,4 @@ let nHighestByFile = (filePath, n) => {
   });
 }
 
-console.log(nHighestByFile('./data2.txt', 7))
+console.log(nHighestByFile('./test_files/NoNewLinerecords.txt', 2));
