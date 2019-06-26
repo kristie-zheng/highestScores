@@ -38,7 +38,7 @@ let parseFile = (inputFilePath, afterParsed, n) => {
   rl.on('close', () => {
     // console.log('here is the records array', records);
     var returnFromCB = afterParsed(records, n)
-    console.log(`The ${n} highest scores are`, returnFromCB)
+    console.log(returnFromCB)
     return returnFromCB;
   });
 }
@@ -95,4 +95,5 @@ let nHighestByFile = (filePath, n) => {
   });
   return parseFile(filePath, findHighestScores, n);
 }
-nHighestByFile('./test_files/LargeNumValidRecords.data', 100);
+console.log(process.argv.slice(2));
+nHighestByFile(...process.argv.slice(2));
